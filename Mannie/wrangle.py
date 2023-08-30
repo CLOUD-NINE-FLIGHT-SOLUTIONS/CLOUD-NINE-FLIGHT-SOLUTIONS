@@ -67,14 +67,16 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         # Filtering the rows with the top 15 airports 
         flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
         
+        
+        # Suming the rows delay times
+        flights['row_sums'] = flights[['CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY']].sum(axis=1)
+
+        
+        # Deleting rows that have no delays
+        flights = flights[flights['row_sums']>0]
+        
         # Reseting the index
         flights.reset_index(inplace=True, drop=True)
-        
-        # Adding a column showing the sum of the rows 
-        flights['sum_rows'] = flights.sum(axis=1)
-        
-        # Removing the rows of data that have no time delays
-        flights = flights[flights['sum_rows']>0]
 
         # Return the db
         return flights
