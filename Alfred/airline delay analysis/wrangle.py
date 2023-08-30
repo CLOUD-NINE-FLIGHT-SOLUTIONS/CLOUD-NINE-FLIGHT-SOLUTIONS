@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import seaborn as sns
-
+import env
 # import acquire
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -20,7 +20,7 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
     #Pull and Create the df
     else:
         #Create the list of columns # want to pull from the dataframe
-        column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST']
+        column_list = ['FL_DATE', 'OP_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY']
 
         #Pull the abridged columns in a loop for 2009-2018 creating an empth df outside the loop
         flights = pd.DataFrame()
@@ -33,15 +33,12 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
             flights = flights.append(flightsi)
 
         #2019 dataset slightly different with less columns and OP_UNIQUE_CARRIER instead of OP_CARRIER
-        column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST']    
+        column_list = ['FL_DATE', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY']    
         #SAME as above except renames the column in order to append (MVP SOLUTION)
         flights2019 = pd.read_csv(f'airline delay analysis/2019.csv', usecols=column_list) 
         flights2019 = flights2019.rename(columns={'OP_UNIQUE_CARRIER':'OP_CARRIER'})
         flights2019 = flights2019[flights2019['OP_CARRIER'] == airline]
         flights = flights.append(flights2019)
-        
-        #Fills in nulls as zero as null means no delay        
-        flights.fillna(0, inplace=True)
         
         #create the csv
         flights.to_csv(f'{airline}.csv')
@@ -54,24 +51,9 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
 
 
 def clean_flight_data_for_average_daily_delay(flights):
-    
-    top_15_hubs = ['ATL',
-                    'DFW',
-                    'DEN',
-                    'ORD',
-                    'LAX',
-                    'JFK',
-                    'IAH',
-                    'PHX',
-                    'EWR',
-                    'SFO',
-                    'SEA',
-                    'IAD',
-                    'PHL',
-                    'CLT',
-                    'MIA']
-    flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
-
+    #Fills in nulls as zero as null means no delay
+    flights.fillna(0, inplace=True)
+    #Makes FL_DATE column a datetime datatype
     flights.FL_DATE = flights.FL_DATE.astype('datetime64')
     #Makes FL_DATE the index
     flights = flights.set_index('FL_DATE')
@@ -79,7 +61,7 @@ def clean_flight_data_for_average_daily_delay(flights):
     flights['total_delays'] = flights.CARRIER_DELAY + flights.WEATHER_DELAY + flights.NAS_DELAY + flights.SECURITY_DELAY + flights.LATE_AIRCRAFT_DELAY
     #Drops the now used columns
     flights = flights.drop(columns=['OP_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY'])
-
+    
     #impute by mean delay by averaging the "average delays" from the month before and after
     flights_monthly_mean = flights.resample('M').mean().total_delays
     impute_1 = flights_monthly_mean.loc['2009-09-30'] + flights_monthly_mean.loc['2009-11-30'] / 2
@@ -125,10 +107,6 @@ def clean_flight_data_for_average_daily_delay(flights):
     flights_daily_mean = flights_daily_mean[flights_daily_mean['total_delays'].notna()]
 
     flights_daily_mean = flights_daily_mean.rename(columns={'total_delays':'average_delay'})
-    
-
-    # finding only the rows with sum 0
-    flights_daily_mean = flights_daily_mean[flights_daily_mean['average_delay']>0]
 
     flights_daily_mean = flights_daily_mean.sort_index()
     
