@@ -8,8 +8,6 @@ import seaborn as sns
 import statsmodels.api as sm
 from datetime import datetime
 
-
-
 # Pulls the airline data for any airline from the 10 csv's of all the flights in north america from 2009 to 2019
 
 def pull_airline_data(airline = 'UA') -> pd.DataFrame:
