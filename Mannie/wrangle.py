@@ -33,7 +33,8 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
             flights = flights.append(flightsi)
 
         #2019 dataset slightly different with less columns and OP_UNIQUE_CARRIER instead of OP_CARRIER
-        column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST']    
+        column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST'] 
+        
         #SAME as above except renames the column in order to append (MVP SOLUTION)
         flights2019 = pd.read_csv(f'airline delay analysis/2019.csv', usecols=column_list) 
         flights2019 = flights2019.rename(columns={'OP_UNIQUE_CARRIER':'OP_CARRIER'})
@@ -46,7 +47,7 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         #create the csv
         flights.to_csv(f'{airline}.csv')
         
-            
+        # List of the top 15 Class B airports    
         top_15_hubs = ['ATL',
                         'DFW',
                         'DEN',
@@ -62,11 +63,20 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
                         'PHL',
                         'CLT',
                         'MIA']
+        
+        # Filtering the rows with the top 15 airports 
         flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
         
+        # Reseting the index
         flights.reset_index(inplace=True, drop=True)
+        
+        # Adding a column showing the sum of the rows 
+        flights['sum_rows'] = flights.sum(axis=1)
+        
+        # Removing the rows of data that have no time delays
+        flights = flights[flights['sum_rows']>0]
 
-        #return the db
+        # Return the db
         return flights
     
 
