@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Pulls the airline data for any airline from the 10 csv's of all the flights in north america from 2009 to 2019
 
-def pull_airline_data(airline = 'UA') -> pd.DataFrame:
+def pull_airline_data(airline = 'WN') -> pd.DataFrame:
     filename = f'{airline}.csv'
     
     #if this airline has already been pulled it will be saved as csv
@@ -26,7 +26,7 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         flights = pd.DataFrame()
         for i in range(2009, 2019):
             # read each csv and pull the columns of interest
-            flightsi = pd.read_csv(f'airline delay analysis/{i}.csv', usecols=column_list)
+            flightsi = pd.read_csv(f'../airline delay analysis/{i}.csv', usecols=column_list)
             # Mask for specific airline which in this case is United Airlines or UA
             flightsi = flightsi[flightsi['OP_CARRIER'] == airline]
             #links all the df's together vertically into one
@@ -36,14 +36,16 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST'] 
         
         #SAME as above except renames the column in order to append (MVP SOLUTION)
-        flights2019 = pd.read_csv(f'airline delay analysis/2019.csv', usecols=column_list) 
+        flights2019 = pd.read_csv(f'../airline delay analysis/2019.csv', usecols=column_list) 
         flights2019 = flights2019.rename(columns={'OP_UNIQUE_CARRIER':'OP_CARRIER'})
         flights2019 = flights2019[flights2019['OP_CARRIER'] == airline]
         flights = flights.append(flights2019)
         
         #Fills in nulls as zero as null means no delay        
         flights.fillna(0, inplace=True)
-
+        
+        #create the csv
+        flights.to_csv(f'{airline}.csv')
         
         # List of the top 15 Class B airports    
         top_15_hubs = ['ATL',
@@ -76,11 +78,6 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         # Reseting the index
         flights.reset_index(inplace=True, drop=True)
 
-                
-        #create the csv
-        flights.to_csv(f'{airline}.csv')
-        
-        
         # Return the db
         return flights
     
