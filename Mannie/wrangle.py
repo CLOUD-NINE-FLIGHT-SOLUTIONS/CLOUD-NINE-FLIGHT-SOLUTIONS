@@ -46,6 +46,26 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         #create the csv
         flights.to_csv(f'{airline}.csv')
         
+            
+        top_15_hubs = ['ATL',
+                        'DFW',
+                        'DEN',
+                        'ORD',
+                        'LAX',
+                        'JFK',
+                        'IAH',
+                        'PHX',
+                        'EWR',
+                        'SFO',
+                        'SEA',
+                        'IAD',
+                        'PHL',
+                        'CLT',
+                        'MIA']
+        flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
+        
+        flights.reset_index(inplace=True, drop=True)
+
         #return the db
         return flights
     
@@ -54,23 +74,7 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
 
 
 def clean_flight_data_for_average_daily_delay(flights):
-    
-    top_15_hubs = ['ATL',
-                    'DFW',
-                    'DEN',
-                    'ORD',
-                    'LAX',
-                    'JFK',
-                    'IAH',
-                    'PHX',
-                    'EWR',
-                    'SFO',
-                    'SEA',
-                    'IAD',
-                    'PHL',
-                    'CLT',
-                    'MIA']
-    flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
+
 
     flights.FL_DATE = flights.FL_DATE.astype('datetime64')
     #Makes FL_DATE the index
