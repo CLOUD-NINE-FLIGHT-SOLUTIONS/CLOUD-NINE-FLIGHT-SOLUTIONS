@@ -266,3 +266,4 @@ def clean_flight_data_for_average_daily_delay(flights):
     flights_daily_mean = flights_daily_mean.sort_index()
     
     return flights_daily_mean
+s
