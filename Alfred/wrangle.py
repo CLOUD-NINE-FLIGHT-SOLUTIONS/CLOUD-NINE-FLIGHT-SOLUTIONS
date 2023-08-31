@@ -33,7 +33,8 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
             flights = flights.append(flightsi)
 
         #2019 dataset slightly different with less columns and OP_UNIQUE_CARRIER instead of OP_CARRIER
-        column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST']    
+        column_list = ['FL_DATE', 'OP_CARRIER_FL_NUM', 'OP_UNIQUE_CARRIER', 'CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY', 'ORIGIN', 'DEST'] 
+        
         #SAME as above except renames the column in order to append (MVP SOLUTION)
         flights2019 = pd.read_csv(f'airline delay analysis/2019.csv', usecols=column_list) 
         flights2019 = flights2019.rename(columns={'OP_UNIQUE_CARRIER':'OP_CARRIER'})
@@ -42,11 +43,45 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
         
         #Fills in nulls as zero as null means no delay        
         flights.fillna(0, inplace=True)
+
         
+        # List of the top 15 Class B airports    
+        top_15_hubs = ['ATL',
+                        'DFW',
+                        'DEN',
+                        'ORD',
+                        'LAX',
+                        'JFK',
+                        'IAH',
+                        'PHX',
+                        'EWR',
+                        'SFO',
+                        'SEA',
+                        'IAD',
+                        'PHL',
+                        'CLT',
+                        'MIA']
+        
+        # Filtering the rows with the top 15 airports 
+        flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
+        
+        
+        # Suming the rows delay times
+        flights['row_sums'] = flights[['CARRIER_DELAY', 'WEATHER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'LATE_AIRCRAFT_DELAY']].sum(axis=1)
+
+        
+        # Deleting rows that have no delays
+        flights = flights[flights['row_sums']>0]
+        
+        # Reseting the index
+        flights.reset_index(inplace=True, drop=True)
+
+                
         #create the csv
         flights.to_csv(f'{airline}.csv')
         
-        #return the db
+        
+        # Return the db
         return flights
     
 
@@ -54,23 +89,7 @@ def pull_airline_data(airline = 'UA') -> pd.DataFrame:
 
 
 def clean_flight_data_for_average_daily_delay(flights):
-    
-    top_15_hubs = ['ATL',
-                    'DFW',
-                    'DEN',
-                    'ORD',
-                    'LAX',
-                    'JFK',
-                    'IAH',
-                    'PHX',
-                    'EWR',
-                    'SFO',
-                    'SEA',
-                    'IAD',
-                    'PHL',
-                    'CLT',
-                    'MIA']
-    flights = flights[flights['ORIGIN'].isin(top_15_hubs)]
+
 
     flights.FL_DATE = flights.FL_DATE.astype('datetime64')
     #Makes FL_DATE the index
