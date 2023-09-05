@@ -146,26 +146,32 @@ The columns are independent and so we can combine them into a total delay colum
 
 ## <a name="conclusion"></a>Conclusion:
 [[Back to top](#top)]
-This is a long way away from a viable real world product.  However it is a very good start.  More work is needed to seperate the causes of delays and group them in a more meaningful way.  This has been an excellent project to learn time series models on.  I would want to create an ensemble model in a later iteration of this project.  All in all
-
 - There is a clear seasonality to the delays
-- Our rmse is just over half a minute better than basline but really is not all that useful in and of itself over millions of flights
-- The seasonal trend IS useful and can inform expected delays given the time of the year
-- There are a lot of residuals...more on that below in next steps
+- Our rmse jumped over baseline for all Airlines despite great performance on train and validate.
+- The seasonal trend IS useful and can inform expected delays given the time of the year.
 - Even the best models couldn't predict COVID!!!
+- Covid started in 2019 and started to affect international flights in December. This may explain the result.
+- Summer of 2011 had a massive delay spike for every ariline.
+- 2013 showed the lowest point in the trendline
 
 ***
 
 ## <a name="Next Steps"></a>Next Steps:
 [[Back to top](#top)]
-A general game plan for next steps is as follows:
--  See if I can get the historical METAR data and append it to the original dataset by destination and arrival information for every flight
--  Then I would see if I can do a classification based on weather and other columns that are in the dataset focusing on high recall for delays...specifically weather delays.
--  I would then create a new column that interpolates average delays from this model at a daily resolution.
--  From there I would construct a linear regression based on features to be discovered that can accurately predict the deviation from the expected delays based on time of year.  This should catch at least a portion of the residuals that are observed here.
--  I would then construct a seperate model for Carrier Delays and Late Aircraft Delays in order to see if there is anything meaningful there. 
 
+Carrier/Maintenance, NAS, Military/Airshow, Accident, Presidential, Natural Disaster all take a back seat to WEATHER!
+- Another look at trends and residuals
+- Upload historical METAR (hourly weather observations for pilots) data for all airports and append proper info based on departure and destination airports and append appropriately to the individual observations
+- Focus on winds, precipitation (amount and type), barometric pressure, visibility and cloud cover as features to predict residuals i.e. the day to day or week to week divergence from the seasonal trend in an ensemble model
+- Try out FB prophet and XG Boost as well as Neural Networks
+- Finish automating the best model selection
+- Anomoly Detection on Residuals
 ***
 
 ## <a name="steps_to_reproduce"></a>Steps to Reproduce:
-- Pick an airline and go.
+- Download the csv from https://www.kaggle.com/datasets/sherrytp/airline-delay-analysis 
+- Go to the Cloud nine repository on GitHub.
+- Download the entire repository to your computer. You can do this by clicking on the "Code" button and selecting "Download ZIP". You can also copy the SSH code to your terminal and use that to clone the repository.
+- Create a file called env.py in your directory on your computer.
+- Similarly, add your GitHub username to your env.py file under the variable github_username.
+- you have saved all the necessary information in your env.py file, you can run the final notebook.
