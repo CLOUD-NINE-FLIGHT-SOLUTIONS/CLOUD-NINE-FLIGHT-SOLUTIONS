@@ -259,3 +259,180 @@ def forecast_plot(target_var, train, validate, test, yhat_df):
     
 
     return forecast
+
+
+
+def means_by_airport(flights, train_fl):
+    
+    # Ordered list of ariports
+    list_of_airports = flights['ORIGIN'].value_counts()
+    list_of_airports = pd.DataFrame(list_of_airports)
+    
+    # List of airports by origin
+    sorted_list = list_of_airports.sort_values(by='ORIGIN', ascending=False)
+    sorted_list = list_of_airports.index.to_list()
+    
+    # Airpor Count
+    airport_count = pd.DataFrame(train_fl.ORIGIN.value_counts())
+    airport_count = airport_count.reindex(sorted_list)
+    
+    # Sorted Origin airports by descending order
+    origin_row_grp = pd.DataFrame(train_fl.groupby('ORIGIN')['row_sums'].mean())
+    origin_row_grp = origin_row_grp.sort_values(by='row_sums', ascending=False)
+
+    # Create the bar plot
+    ax = origin_row_grp.plot.bar(width=0.5, ec='black', alpha=.5, figsize=(15, 9))
+
+    # Set plot title and labels
+    ax.set(title='Average Delay by Airport', xlabel='Airport', ylabel='Avg. Delay')
+
+    # Get the heights and positions for text labels
+    ht_list = [ht for ht in origin_row_grp.row_sums]
+    pos_list = list(range(len(origin_row_grp)))
+    airport_val_list = [val for val in airport_count.ORIGIN]
+
+
+    # Loop through the data and add text labels inside the existing plot
+    for ht, pos, val in zip(ht_list, pos_list, airport_val_list):
+        ax.text(pos, ht-10, val, fontsize=10, ha='center', va='bottom', rotation=90)  # Adjust ha and va as needed
+
+    # Show the plot
+    plt.show()
+
+
+# Anova test 
+def anova_airport_test(flights):
+    
+    # Ordered list of ariports
+    list_of_airports = flights['ORIGIN'].value_counts()
+    list_of_airports = pd.DataFrame(list_of_airports)
+    
+    # List of airports by origin
+    sorted_list = list_of_airports.sort_values(by='ORIGIN', ascending=False)
+    sorted_list = list_of_airports.index.to_list()
+    
+    # Initialize an empty dictionary
+    airport_dict = {}
+
+    # Lists of airports
+    sorted_mean_list = [
+        'ORD_mean',
+        'SFO_mean',
+        'DEN_mean',
+        'EWR_mean',
+        'IAH_mean',
+        'LAX_mean',
+        'IAD_mean',
+        'SEA_mean',
+        'PHX_mean',
+        'PHL_mean',
+        'DFW_mean',
+        'MIA_mean',
+        'ATL_mean',
+        'JFK_mean',
+        'CLT_mean'
+    ]
+
+    for airport in sorted_list:
+        # Filter rows for the current airport and extract 'row_sums' values
+        row_sums_values = flights[flights['ORIGIN'] == airport]['row_sums'].tolist()
+
+        # Store 'row_sums' values in the airport_dict with the airport mean name as the key
+        airport_dict[sorted_mean_list[sorted_list.index(airport)]] = row_sums_values
+
+    # List of means for test
+    ORD_mean = airport_dict['ORD_mean']
+    SFO_mean = airport_dict['SFO_mean']
+    DEN_mean = airport_dict['DEN_mean']
+    EWR_mean = airport_dict['EWR_mean']
+    IAH_mean = airport_dict['IAH_mean']
+    LAX_mean = airport_dict['LAX_mean']
+    IAD_mean = airport_dict['IAD_mean']
+    SEA_mean = airport_dict['SEA_mean']
+    PHX_mean = airport_dict['PHX_mean']
+    PHL_mean = airport_dict['PHL_mean']
+    DFW_mean = airport_dict['DFW_mean']
+    MIA_mean = airport_dict['MIA_mean']
+    ATL_mean = airport_dict['ATL_mean']
+    JFK_mean = airport_dict['JFK_mean']
+    CLT_mean = airport_dict['CLT_mean']
+        
+    # Stats Test (Kruskal) for dependent means
+    f, p = stats.f_oneway(CLT_mean, JFK_mean, ATL_mean, MIA_mean, DFW_mean, PHL_mean, PHX_mean, SEA_mean, IAD_mean, LAX_mean, IAH_mean, EWR_mean, DEN_mean, SFO_mean, ORD_mean)
+        
+        
+    return f, p
+        
+        
+
+# Lag plot function       
+def plot_best_lag_plot(train, sample, lag):
+
+    #Plots the best correlated lag
+    pd.plotting.lag_plot(train.resample(sample).mean(), lag=lag)
+    
+    
+    
+# Function to run the Pearson's R Test
+def pearsons_r_test(train, sample):
+    
+    # Removing the array from each list
+    flattened_x = [item for sublist in train.resample(sample).mean().values[0:-1] for item in sublist]
+    # Removing the array from each list
+    flattened_y = [item for sublist in train.resample(sample).mean().values[1:] for item in sublist]
+    
+    # Running a pearsons r test
+    corr, p = stats.pearsonr(flattened_x, flattened_y)#, (train.resample('1m'))
+
+    return corr, p
+   
+    
+    
+# Function for plotting the average means per month
+def plot_month_delay(train_fl):
+    
+    # dataframe of the average mean per month
+    mean_row_grp = pd.DataFrame(train_fl.groupby('FL_DATE')['row_sums'].mean())
+    
+    # Plot the momthly averages
+    ax = mean_row_grp.groupby(mean_row_grp.index.month).mean().plot.bar(width=.9, ec='black')
+    plt.xticks(rotation=0)
+    ax.set(title='Average Delay by Month', xlabel='Month', ylabel='Avg. Minute Delay')
+    plt.show()
+
+ 
+    
+    
+#    
+def anova_month_test(train):
+    
+    # Group by 'Category' (in this case, day of the week)
+    grouped = train.groupby(train.index.month_name())
+
+    # Create an empty dictionary to store the groups
+    group_dict = {}
+
+    # Iterate through the groups and populate the dictionary
+    for name, group in grouped:
+
+        group_dict[f'Category {name}'] = group['average_delay'].tolist()
+
+    # 
+    january = group_dict['Category January']
+    february = group_dict['Category February']
+    march = group_dict['Category March']
+    april = group_dict['Category April']
+    may = group_dict['Category May']
+    june = group_dict['Category June']
+    july = group_dict['Category July']
+    august = group_dict['Category August']
+    september = group_dict['Category September']
+    october = group_dict['Category October']
+    november = group_dict['Category November']
+    december = group_dict['Category December']
+    
+     # Stats Test (Kruskal) for dependent means
+    f, p = stats.f_oneway(january, february, march, april, may, june, july, august, september, october, november, december)
+    
+    return f, p
+
