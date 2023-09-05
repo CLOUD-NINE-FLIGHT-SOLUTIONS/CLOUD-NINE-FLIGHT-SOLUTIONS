@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import seaborn as sns
-import env
+
 # import acquire
 import matplotlib.pyplot as plt
 import seaborn as sns
