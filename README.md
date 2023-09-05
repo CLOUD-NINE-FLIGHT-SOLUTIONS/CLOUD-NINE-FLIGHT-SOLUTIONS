@@ -140,8 +140,9 @@ As a takeaway, I learned a bit about the time series analysis and think that I m
 
 The steps to look through the MVP are in the final notebook.  There are a lot of functions in the preliminary  exploration, the acquire and the prepare files that one can use to explore further but for the purposes of reproducing this mvp all that is needed is in the wrangle.py file and the project_final.ipynb.
 ### Takeaways from exploration:
+[[Back to top](#top)]
 
-The columns are independent and so we can combine them into a total delay colum 
+- The columns are independent and so we can combine them into a total delay colum 
 ***
 
 ## <a name="conclusion"></a>Conclusion:
