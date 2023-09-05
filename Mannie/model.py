@@ -39,6 +39,23 @@ def train_test_split(df, time_duration):
 
     return train, validate, test
 
+
+def train_fl_test_fl_split(flights, time_duration):
+
+    # Setting the Index
+    flights.set_index('FL_DATE', inplace=True)
+    
+    # split into train, validation, test
+    train_fl = flights[:'2016']
+    validate_fl = flights['2017' : '2018']
+    test_fl = flights['2019' : ]
+
+    return train_fl, validate_fl, test_fl
+    
+
+
+
+
 #graphs the data and shows the split
 #Borrowed from class
 def graph_split(train, validate, test):
@@ -259,3 +276,42 @@ def forecast_plot(target_var, train, validate, test, yhat_df):
     
 
     return forecast
+
+
+def means_by_airport(flights, train_fl):
+    
+    # Ordered list of ariports
+    list_of_airports = flights['ORIGIN'].value_counts()
+    list_of_airports = pd.DataFrame(list_of_airports)
+    
+    # List of airports by origin
+    sorted_list = list_of_airports.sort_values(by='ORIGIN', ascending=False)
+    sorted_list = list_of_airports.index.to_list()
+    
+    # Airpor Count
+    airport_count = pd.DataFrame(train_fl.ORIGIN.value_counts())
+    airport_count = airport_count.reindex(sorted_list)
+    
+    # Sorted Origin airports by descending order
+    origin_row_grp = pd.DataFrame(train_fl.groupby('ORIGIN')['row_sums'].mean())
+    origin_row_grp = origin_row_grp.sort_values(by='row_sums', ascending=False)
+
+    # Create the bar plot
+    ax = origin_row_grp.plot.bar(width=0.5, ec='black', alpha=.5, figsize=(15, 9))
+
+    # Set plot title and labels
+    ax.set(title='Average Delay by Airport', xlabel='Airport', ylabel='Avg. Delay')
+
+    # Get the heights and positions for text labels
+    ht_list = [ht for ht in origin_row_grp.row_sums]
+    pos_list = list(range(len(origin_row_grp)))
+    airport_val_list = [val for val in airport_count.ORIGIN]
+
+
+    # Loop through the data and add text labels inside the existing plot
+    for ht, pos, val in zip(ht_list, pos_list, airport_val_list):
+        ax.text(pos, ht-10, val, fontsize=10, ha='center', va='bottom', rotation=90)  # Adjust ha and va as needed
+
+    # Show the plot
+    plt.show()
+

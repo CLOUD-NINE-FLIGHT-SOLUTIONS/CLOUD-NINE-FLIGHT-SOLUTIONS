@@ -63,3 +63,5 @@ def seasonal_decomposition_plot(df, duration):
 
     decomposition['trend_centered'] = decomposition.trend - decomposition.trend.mean()
     decomposition[['trend_centered', 'seasonal', 'resid']].plot();
+    
+    
