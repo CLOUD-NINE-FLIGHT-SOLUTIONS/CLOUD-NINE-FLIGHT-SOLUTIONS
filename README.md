@@ -31,40 +31,38 @@ ___
 
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vR19fsVfxHvzjrp0kSMlzHlmyU0oeTTAcnTUT9dNe4wAEXv_2WJNViUa9qzjkvcpvkFeUCyatccINde/pub?w=1389&amp;h=410">
 ## <a name="exective_summary"></a> Executive Summary:
-This project includes data pulled from https://www.kaggle.com/datasets/sherrytp/airline-delay-analysis covering 10 years of flights from 2009-2019.  The data are held in 10 csv's (one for each year).  The project breaks down total delays for each flight and extracts an average delay over two week intervals from which a time series model was constructed in an attempt to see if we can accurately characterize seasonal variation in the data with regard to delays.  Although the best performing model beat baselines, it was not significant.  However, the seasonal variation that was extracted seems to be useful as a jumping off point for a more rigorous model in the future.  
+This project includes data pulled from https://www.kaggle.com/datasets/sherrytp/airline-delay-analysis covering 10 years of flights from 2009-2019.  The data are held in 10 csv's (one for each year).Major airlines United Airlines,American Airlines, Delta and South West in addition to the top 15 Class B airpot hubs are obsrved. The project breaks down total delays for each flight and extracts an average delay over two week intervals from which a time series model is constructed to accurately characterize seasonal variation in the data with regard to delays.  
 
 ***
 
 ## <a name="project_goals"></a> Project Goals:
-- Explore 10 csv's of data including information on airline data from 2009 to 2019 for the flights in North America
-- Make sense of the data and try and see if I can use it to discover underlying patterns in airline delays both at the Airline Level and at the National Airspace level
-- Clean the data to only use time information, after which, if time permits, maybe add in other features.
-- Try and create a viable model that can predict airline delays based on historical trends
+
+The goal is to develop a Machine Learning model that can accuratly decode a decade of flight data to predict and manage airline delays. By harnessing the power of seasonal trends and incorporating comprehensive flight data, we empower airlines to optimize operations,minimize costs, enhance passenger experience, and soar above the competition. Data-driven insights pave the way for stakeholders to make executive decisions based off of actionable analysis.
 
 ***
 
 ## <a name="project_description"></a>Project Description:
 [[Back to top](#top)]
-The purpose of this project is to look at all of the massive amounts of data and see if I can garner greneral trends that may prove useful to the general aviation community.  I suspected that there is a yearly pattern that holds and dictates delays given the four seasons in a year but it would be nice to show that there is a repeatable trend.  Also I am wondering if these results will be different by major airlines as they often own different hubs in the transportation network.  Different airports have diffenent airlines operating out of them as main hubs.
+The purpose of this project is to look at all of the massive amounts of data and see if we can garner greneral trends that may prove useful to the mahor airline carrier stakeholders. We suspected that there is a yearly pattern that holds and dictates delays given the four seasons in a year but it would be nice to show that there is a repeatable trend. Additionally, we are wondering if these results will be different by major airlines as they often own different hubs in the transportation network.  Different airports have diffenent airlines operating out of them as main hubs.
 
 ***
 
 ## <a name="planning"></a>Project Planning:    
 [[Back to top](#top)]
-The main goal of the project was to explore the data presented and see what I could discover.  Since there is a lot of data to go through I want to cut it down into a manageable set of features that I could use to characterize delays.  I am relying on domain knowledge as a holder of a Commercial Pilot's License to choose initial features as appropriate.  After doing this, I wanted to initially choose a representative airline to do the initial model.  United Airlines is a great choice since it's main hubs span the entire system and covers most of the major regions in the United States National Airspace System.
-
+The main goal of the project is to explore the data presented and see what we can discover.  Since there is a verbouse aount of data ton observe we want to cut it down into a manageable set of features that I could use to characterize delays.  We are relying on team member and Jr. Data Scientist Alfred W. S. Pirovits Jr. domain knowledge as a holder of a Commercial Pilot's License to choose initial features as appropriate.  After doing this, we selected reputable airlines such as United Airlines,American Airlines, Delta and South West and focused on on Top 15  out of 37 Class B hubs. 
 ***
 
 ## <a name="initial_questions"></a>Initial_questions:
 [[Back to top](#top)]
-- 1. Do flight delays exhibit a predictable seasonal pattern?
-- 2. Is the seasonal variation in delays different for major airlines given their distinct hubs?  
-- 3. Is the total delay a viable aggregation of the individual delay types?   
-- 4. Does the expected delay based on seasonal trends align with actual delay data?
+- Do flight delays exhibit a predictable seasonal pattern?
+- Is the seasonal variation in delays different for major airlines given their distinct hubs?  
+- Is the total delay a viable aggregation of the individual delay types?   
+- Does the expected delay based on seasonal trends align with actual delay data?
    
 
 
 ***
+
 
 ## <a name="hypothesis"></a>Hypothesis:
 [[Back to top](#top)]
