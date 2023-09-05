@@ -104,7 +104,6 @@ As a takeaway, I learned a bit about the time series analysis and think that I m
 
 ## <a name="dictionary"></a>Data Dictionary  
 [[Back to top](#top)]
-FL_DATE OP_CARRIER CARRIER_DELAY WEATHER_DELAY NAS_DELAY SECURITY_DELAY LATE_AIRCRAFT_DELAY
 ### Data Used
 ---
 
