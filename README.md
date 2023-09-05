@@ -107,17 +107,23 @@ As a takeaway, I learned a bit about the time series analysis and think that I m
 FL_DATE OP_CARRIER CARRIER_DELAY WEATHER_DELAY NAS_DELAY SECURITY_DELAY LATE_AIRCRAFT_DELAY
 ### Data Used
 ---
-| Attribute | Definition | Data Type |
-| ----- | ----- | ----- |
-| FL_DATE | The date of the flight in question (initially object but converted) | datetime64 |
-| OP_CARRIER | Two letter IATA carrier code for the airline in question in minutes | object |
-| CARRIER_DELAY | Delay caused by the carrier in minutes | object |
-| WEATHER_DELAY | The assessed tax value of the home in minutes | object |
-| NAS_DELAY | NAS (national airspace system) delay caused in minutes | object |
-| SECURITY_DELAY | Delay caused by security problems in minutes | object |
-| LATE_AIRCRAFT_DELAY | Delay caused by aircraft coming in late from previous flight in minutes | object |
-| total_delay | The total of all the delay columns created during feature engineering in minutes | float64 | 
-| average_delay | Average of the total delay column resampled by duration in minutes | float64 |
+
+| Attribute            | Definition                                                                                     | Data Type       |
+|----------------------|------------------------------------------------------------------------------------------------|-----------------|
+| FL_DATE              | The date of the flight in question                                                             | datetime64[ns]  |
+| OP_CARRIER           | Two letter IATA carrier code for the airline in question                                       | object          |
+| OP_CARRIER_FL_NUM    | Flight number associated with the airline                                                      | int64           |
+| ORIGIN               | Origin airport for the flight                                                                  | object          |
+| DEST                 | Destination airport for the flight                                                             | object          |
+| CARRIER_DELAY        | Delay caused by the carrier in minutes                                                         | float64         |
+| WEATHER_DELAY        | Delay caused due to weather conditions                                                         | float64         |
+| NAS_DELAY            | NAS (national airspace system) delay caused in minutes                                         | float64         |
+| SECURITY_DELAY       | Delay caused by security problems in minutes                                                   | float64         |
+| LATE_AIRCRAFT_DELAY  | Delay caused by aircraft coming in late from a previous flight in minutes                      | float64         |
+| row_sums             | Sum of row values)                                                                             | float64         |
+| total_delay          | The total of all the delay columns created during feature engineering in minutes               | float64         |
+| average_delay        | Average of the total delay column resampled by duration in minutes                             | float64         |
+
 
 ***
 
