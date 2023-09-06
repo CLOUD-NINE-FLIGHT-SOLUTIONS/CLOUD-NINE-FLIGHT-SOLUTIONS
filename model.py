@@ -281,21 +281,17 @@ def forecast_plot(target_var, train, validate, test, yhat_df):
 
 def means_by_airport(flights, train_fl):
     
-    # Ordered list of ariports
-    list_of_airports = flights['ORIGIN'].value_counts()
-    list_of_airports = pd.DataFrame(list_of_airports)
+        
+    # Sorted Origin airports by descending order
+    origin_row_grp = pd.DataFrame(train_fl.groupby('ORIGIN')['row_sums'].mean())
+    origin_row_grp = origin_row_grp.sort_values(by='row_sums', ascending=False)
     
     # List of airports by origin
-    sorted_list = list_of_airports.sort_values(by='ORIGIN', ascending=False)
-    sorted_list = list_of_airports.index.to_list()
+    sorted_list = origin_row_grp.index.to_list()
     
     # Airpor Count
     airport_count = pd.DataFrame(train_fl.ORIGIN.value_counts())
     airport_count = airport_count.reindex(sorted_list)
-    
-    # Sorted Origin airports by descending order
-    origin_row_grp = pd.DataFrame(train_fl.groupby('ORIGIN')['row_sums'].mean())
-    origin_row_grp = origin_row_grp.sort_values(by='row_sums', ascending=False)
 
     # Create the bar plot
     ax = origin_row_grp.plot.bar(width=0.5, ec='black', alpha=.5, figsize=(15, 9))
@@ -351,6 +347,7 @@ def anova_airport_test(flights):
     ]
 
     for airport in sorted_list:
+        
         # Filter rows for the current airport and extract 'row_sums' values
         row_sums_values = flights[flights['ORIGIN'] == airport]['row_sums'].tolist()
 
@@ -379,6 +376,64 @@ def anova_airport_test(flights):
         
         
     return f, p
+        
+        
+# Anova test 
+def anova_airport_test_southwest(flights):
+    
+    # Ordered list of ariports
+    list_of_airports = flights['ORIGIN'].value_counts()
+    list_of_airports = pd.DataFrame(list_of_airports)
+    
+    # List of airports by origin
+    sorted_list = list_of_airports.sort_values(by='ORIGIN', ascending=False)
+    sorted_list = list_of_airports.index.to_list()
+    
+    # Initialize an empty dictionary
+    airport_dict = {}
+
+    # Lists of airports
+    sorted_mean_list = [
+        'ORD_mean',
+        'SFO_mean',
+        'DEN_mean',
+        'EWR_mean',
+        'IAH_mean',
+        'LAX_mean',
+        'IAD_mean',
+        'SEA_mean',
+        'PHX_mean',
+        'PHL_mean'
+    ]
+
+    for airport in sorted_list:
+        
+        # Filter rows for the current airport and extract 'row_sums' values
+        row_sums_values = flights[flights['ORIGIN'] == airport]['row_sums'].tolist()
+
+        # Store 'row_sums' values in the airport_dict with the airport mean name as the key
+        airport_dict[sorted_mean_list[sorted_list.index(airport)]] = row_sums_values
+
+    # List of means for test
+    ORD_mean = airport_dict['ORD_mean']
+    SFO_mean = airport_dict['SFO_mean']
+    DEN_mean = airport_dict['DEN_mean']
+    EWR_mean = airport_dict['EWR_mean']
+    IAH_mean = airport_dict['IAH_mean']
+    LAX_mean = airport_dict['LAX_mean']
+    IAD_mean = airport_dict['IAD_mean']
+    SEA_mean = airport_dict['SEA_mean']
+    PHX_mean = airport_dict['PHX_mean']
+    PHL_mean = airport_dict['PHL_mean']
+        
+    # Stats Test (Kruskal) for dependent means
+    f, p = stats.f_oneway(PHL_mean, PHX_mean, SEA_mean, IAD_mean, LAX_mean, IAH_mean, EWR_mean, DEN_mean, SFO_mean, ORD_mean)
+        
+        
+    return f, p
+               
+        
+        
         
         
 
