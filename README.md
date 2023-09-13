@@ -32,7 +32,7 @@ ___
 ![Cloud_9_Logo](Cloud_9_Logo%20(1).png)
 
 ## <a name="exective_summary"></a> Executive Summary:
-This project includes data pulled from https://www.kaggle.com/datasets/sherrytp/airline-delay-analysis covering 10 years of flights from 2009-2019.  The data are held in 10 csv's (one for each year).Major airlines United Airlines,American Airlines, Delta and South West in addition to the top 15 Class B airpot hubs are obsrved. The project breaks down total delays for each flight and extracts an average delay over two week intervals from which a time series model is constructed to accurately characterize seasonal variation in the data with regard to delays.  
+This project includes data pulled from https://www.kaggle.com/datasets/sherrytp/airline-delay-analysis covering 10 years of flights from 2009-2019.  The data are stored in 10 csv files (one for each year).Major airlines such as United Airlines,American Airlines, Delta and South West in addition to the top 15 Class B airport hubs are observed. The project breaks down total delays for each flight and extracts an average delay over two week intervals from which a time series model is constructed to accurately characterize seasonal variation in the data with regard to delays.  
 
 ***
 
